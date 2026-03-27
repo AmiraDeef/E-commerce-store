@@ -1,18 +1,19 @@
-const Category=require('../models/categoryModel')
+const Category=require('../models/Category')
 const User = require("../models/User");
 const Product = require("../models/Product");
-const createCategorySchema=require("./validation/categoryValidation")
+const { createCategorySchema }=require("./validation/categoryValidation")
 
-const addCategoryController=async(req,res)=>{
+const addCategoryController=async(req,res,next)=>{
     try {
 
        const user = req.user;
+       console.log(user)
 
         if (user.role !== "admin") {
         return res.status(400).json({ msg: "Only admin can add catrgoriess" });
         }
 
-        if (!req.file) return res.status(404).json({ msg: "Pls upload image" });
+        // if (!req.file) return res.status(404).json({ msg: "Pls upload image" });
         const { error, value } = createCategorySchema.validate(req.body, {  
             abortEarly: false,
             stripUnknown: true,
@@ -23,13 +24,14 @@ const addCategoryController=async(req,res)=>{
             });
         }   
         const {name,description}=value
-        value.image=req.file.path
+        // value.image=req.file.path
         const existCategory=await Category.findOne({name})
         if(existCategory){
             return res.status(400).json({"message":"category already exist with this name"})   
         }
         const newCategory=await Category.create({
-            name,description,image
+            name,description,
+            // image
         })
         res.status(201).json({
             message:"Category created successfully",

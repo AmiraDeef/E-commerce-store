@@ -73,6 +73,7 @@ const loginController= async (req,res)=> {
 
       const token =jwt.sign({
         id:existUser._id,
+        role:existUser.role
 
        },
       process.env.JWT_SK,
