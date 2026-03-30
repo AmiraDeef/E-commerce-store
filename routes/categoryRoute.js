@@ -2,11 +2,15 @@ const express=require('express')
 const router=express.Router()
 const authMiddleware=require("../Middlewares/authMiddleware")
 const{
-    addCategoryController,updateCategory,deleteCategoryController,getAllCategoriesController,getCategoryByIdController
-}=require('../controllers/categoryController')
+    addCategoryController,updateCategory,
+    deleteCategoryController,getAllCategoriesController,
+    getCategoryByIdController}=require('../controllers/categoryController')
 
 
-router.post("/",authMiddleware.authMiddleware,addCategoryController);
+
+const {uploadImageCat}=require("../Middlewares/uploadImageMiddleware")
+
+router.post("/",authMiddleware.authMiddleware,uploadImageCat,addCategoryController);
 router.get("/",getAllCategoriesController);
 router.get("/:id",getCategoryByIdController);
 router.delete("/:id",authMiddleware.authMiddleware,deleteCategoryController);

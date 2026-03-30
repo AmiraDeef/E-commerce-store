@@ -79,10 +79,10 @@ const loginController= async (req,res)=> {
       process.env.JWT_SK,
       {expiresIn:"1d"})
 
-      res.status(200).json({
-        message:"Login successful",
-        token
-      })
+    return res.status(200).json({
+      message: "Login successful",
+      token
+    });
         
     } catch (error) {
         next(error)

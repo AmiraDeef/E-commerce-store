@@ -5,7 +5,7 @@ const { createCategorySchema }=require("./validation/categoryValidation")
 
 const addCategoryController=async(req,res,next)=>{
     try {
-
+       console.log(req.user)
        const user = req.user;
        console.log(user)
 
@@ -13,7 +13,7 @@ const addCategoryController=async(req,res,next)=>{
         return res.status(400).json({ msg: "Only admin can add catrgoriess" });
         }
 
-        // if (!req.file) return res.status(404).json({ msg: "Pls upload image" });
+        if (!req.file) return res.status(404).json({ msg: "Pls upload image" });
         const { error, value } = createCategorySchema.validate(req.body, {  
             abortEarly: false,
             stripUnknown: true,
@@ -24,14 +24,13 @@ const addCategoryController=async(req,res,next)=>{
             });
         }   
         const {name,description}=value
-        // value.image=req.file.path
+        value.image=req.file.path
         const existCategory=await Category.findOne({name})
         if(existCategory){
             return res.status(400).json({"message":"category already exist with this name"})   
         }
         const newCategory=await Category.create({
-            name,description,
-            // image
+            name,description,image:req.file.path,createdBy: req.user.id
         })
         res.status(201).json({
             message:"Category created successfully",
@@ -42,7 +41,7 @@ const addCategoryController=async(req,res,next)=>{
     }   
 }
 
-const getAllCategoriesController=async(req,res)=>{
+const getAllCategoriesController=async(req,res,next)=>{
     try {
         const categories=await Category.find()
         res.status(200).json({
@@ -53,9 +52,11 @@ const getAllCategoriesController=async(req,res)=>{
     }
 }
 
-const getCategoryByIdController=async(req,res)=>{
+const getCategoryByIdController=async(req,res,next)=>{
     try {
-        const category=await Category.findById(req.params.id)
+        const { id } = req.params;
+        console.log(req.query.id)
+        const category=await Category.findById(id)
         if(!category){
             return res.status(404).json({
                 message:"category not found"

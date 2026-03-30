@@ -5,7 +5,8 @@ const productSchema=new mongoose.Schema({
     name:{
         type:String,
         trim:true,
-        required:true,unique:true
+        required:true,
+        unique:true
     },
     description:{
         type:String,    
@@ -33,7 +34,7 @@ const productSchema=new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Category"
         
-    },CreatedBy:{
+    },createdBy:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     }
