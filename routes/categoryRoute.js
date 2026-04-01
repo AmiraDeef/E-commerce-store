@@ -4,7 +4,7 @@ const authMiddleware=require("../Middlewares/authMiddleware")
 const{
     addCategoryController,updateCategory,
     deleteCategoryController,getAllCategoriesController,
-    getCategoryByIdController}=require('../controllers/categoryController')
+    getCategoryByNameController}=require('../controllers/categoryController')
 
 
 
@@ -12,7 +12,7 @@ const {uploadImageCat}=require("../Middlewares/uploadImageMiddleware")
 
 router.post("/",authMiddleware.authMiddleware,uploadImageCat,addCategoryController);
 router.get("/",getAllCategoriesController);
-router.get("/:id",getCategoryByIdController);
+router.get("/:name",getCategoryByNameController);
 router.delete("/:id",authMiddleware.authMiddleware,deleteCategoryController);
 router.put("/:id",authMiddleware.authMiddleware,updateCategory);
 

@@ -16,7 +16,7 @@ const registerController = async (req, res) => {
       });
     }
 
-    const { username, email, password, role } = value;
+    const { firstName,lastName,username, email, password, role } = value;
     const existUser=await User.findOne({email})
     if(existUser){
         return res.status(400).json({
@@ -25,7 +25,7 @@ const registerController = async (req, res) => {
     }
     const hashPassword=await bcrypt.hash(password,10)
     const newUser = await User.create({
-      username,
+      firstName,lastName,username,
       email,
       password: hashPassword,
       role,
@@ -47,7 +47,7 @@ const registerController = async (req, res) => {
 };
 
 
-const loginController= async (req,res)=> {
+const loginController= async (req,res,next)=> {
 
     try {
     const { error, value } = loginSchema.validate(req.body, {

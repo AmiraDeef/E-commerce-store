@@ -51,25 +51,31 @@ const getAllCategoriesController=async(req,res,next)=>{
         next(error)
     }
 }
-
-const getCategoryByIdController=async(req,res,next)=>{
+const getCategoryByNameController = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        console.log(req.query.id)
-        const category=await Category.findById(id)
-        if(!category){
-            return res.status(404).json({
-                message:"category not found"
-            })
+        const { name } = req.params;
+
+  
+        const category = await Category.findOne({ name: name });
+        console.log(category)
+        if (!category) {
+            return res.status(404).json({ message: "Category not found" });
         }
+
+      
+        const products = await Product.find({ categoryId: category._id });
+
+        
         res.status(200).json({
-            category
-        })
-    }   
-    catch (error) {
-        next(error)
-    }       
-} 
+            category: {
+                ...category._doc,
+                products: products 
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 const updateCategory = async (req, res, next) => {
   try {
@@ -94,7 +100,7 @@ const updateCategory = async (req, res, next) => {
        const category = await Category.findByIdAndUpdate(
       req.params.id,
       updateData, 
-      { new: true, runValidators: true }
+      { returnDocument: 'after',  runValidators: true }
     );
     if (!category) return res.status(404).json({ msg: "category not found" });
     res.status(200).json({ msg: "updated Successfully", category });
@@ -125,7 +131,7 @@ const deleteCategoryController=async(req,res)=>{
 module.exports={
 addCategoryController,
 getAllCategoriesController,
-getCategoryByIdController,
+getCategoryByNameController,
 updateCategory,
 deleteCategoryController
 
